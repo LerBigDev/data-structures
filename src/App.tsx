@@ -1,35 +1,82 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
+import { initBinaryTree } from "./structures/binary-tree/BinaryTree";
+
+const bTreeEntity = initBinaryTree();
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [bTreeViz, setBTreeViz] = useState<string>("");
+  useEffect(() => {}, []);
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="flex flex-col gap-2 items-start">
+        <span>Value</span>
+        <input type="number" className="border w-100" id="number-input" />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <div className="flex flex-col gap-2 items-start">
+        <span>New value</span>
+        <input type="number" className="border w-100" id="number-input-new" />
+      </div>
+      <div className="flex gap-4">
+        <button
+          className="border bg-gradient-to-tl from-orange-600 to-purple-900 p-2 rounded-xl"
+          onClick={() => {
+            const el: HTMLInputElement | null = document.getElementById(
+              "number-input"
+            ) as HTMLInputElement;
+            if (!el) return;
+            bTreeEntity.insert(Number(el.value));
+            setBTreeViz(bTreeEntity.show(null));
+          }}
+        >
+          Add to bTree
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button
+          className="border bg-gradient-to-tl from-orange-600 to-purple-900 p-2 rounded-xl"
+          onClick={() => {
+            const el: HTMLInputElement | null = document.getElementById(
+              "number-input"
+            ) as HTMLInputElement;
+            if (!el) return;
+            bTreeEntity.remove(Number(el.value));
+            setBTreeViz(bTreeEntity.show(null));
+          }}
+        >
+          Remove from bTree
+        </button>
+        <button
+          className="border bg-gradient-to-tl from-orange-600 to-purple-900 p-2 rounded-xl"
+          onClick={() => {
+            const el: HTMLInputElement | null = document.getElementById(
+              "number-input"
+            ) as HTMLInputElement;
+            const elNew: HTMLInputElement | null = document.getElementById(
+              "number-input-new"
+            ) as HTMLInputElement;
+            if (!el || !elNew) return;
+            bTreeEntity.edit(Number(el.value), Number(elNew.value));
+            setBTreeViz(bTreeEntity.show(null));
+          }}
+        >
+          Replace
+        </button>
+        <button
+          className="border bg-gradient-to-tl from-orange-600 to-purple-900 p-2 rounded-xl"
+          onClick={() => {
+            const el: HTMLInputElement | null = document.getElementById(
+              "number-input"
+            ) as HTMLInputElement;
+            if (!el) return;
+            const value = bTreeEntity.search(Number(el.value));
+            alert(value);
+          }}
+        >
+          Search
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <pre>{bTreeViz}</pre>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
